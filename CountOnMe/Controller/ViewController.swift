@@ -10,9 +10,10 @@ import UIKit
 
 class ViewController: UIViewController {
     // MARK: - Properties
-    var stringNumbers: [String] = [String()]
-    var operators: [String] = ["+"]
-    var index = 0
+    //var stringNumbers: [String] = [String()]
+    //var operators: [String] = ["+"]
+    //var index = 0
+    
     var isExpressionCorrect: Bool {
         if let stringNumber = stringNumbers.last {
             if stringNumber.isEmpty {
@@ -88,28 +89,8 @@ class ViewController: UIViewController {
             stringNumberMutable += "\(newNumber)"
             stringNumbers[stringNumbers.count-1] = stringNumberMutable
         }
+        
         updateDisplay()
-    }
-
-    func calculateTotal() {
-        if !isExpressionCorrect {
-            return
-        }
-
-        var total = 0
-        for (i, stringNumber) in stringNumbers.enumerated() {
-            if let number = Int(stringNumber) {
-                if operators[i] == "+" {
-                    total += number
-                } else if operators[i] == "-" {
-                    total -= number
-                }
-            }
-        }
-
-        textView.text = textView.text + "=\(total)"
-
-        clear()
     }
 
     func updateDisplay() {
@@ -125,9 +106,5 @@ class ViewController: UIViewController {
         textView.text = text
     }
 
-    func clear() {
-        stringNumbers = [String()]
-        operators = ["+"]
-        index = 0
-    }
+    
 }
