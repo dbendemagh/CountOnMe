@@ -12,10 +12,11 @@ import XCTest
 class CalculationTestCase: XCTestCase {
     
     var calculation: Calculation!
+    var calculatorDelegate: CalculatorDelegate!
     
     override func setUp() {
         super.setUp()
-        // Put setup code here. This method is called before the invocation of each test method in the class.
+        
         calculation = Calculation()
     }
     
@@ -30,9 +31,20 @@ class CalculationTestCase: XCTestCase {
         XCTAssertEqual(calculation.stringNumbers.last, "35")
     }
     
-//    func testGivenNumberIsEmpty_WhenCalculateTotal_ThenExpressionIsIncorrect() {
-//        XCTAssertEqual(calculation.isExpressionCorrect, false)
-//    }
+    func testGivenNumberIsEmpty_WhenCalculateTotal_ThenExpressionIsIncorrect() {
+        XCTAssertEqual(calculation.isExpressionCorrect, false)
+    }
+    
+    func testGivenNumberIsEmpty_WhenCheckCanAddOperator_ThenResultFalse() {
+        XCTAssertFalse(calculation.canAddOperator)
+    }
+    
+    func testGivenNumberIs3AndEmpty_WhenTestExpression_ThenExpressionIsIncorrect() {
+        calculation.addNumNumber(3)
+        calculation.plus()
+        let _ = calculation.calculateTotal()
+        XCTAssertFalse(calculation.isExpressionCorrect)
+    }
     
     func testGivenNumberIs2_WhenAddingPlus4Minus3_ThenTextIs2Plus4Minus3() {
         calculation.addNumNumber(2)
@@ -64,4 +76,8 @@ class CalculationTestCase: XCTestCase {
         calculation.addNumNumber(4)
         XCTAssertEqual(calculation.calculateTotal(), 2)
     }
+    
+    
+    
+    
 }

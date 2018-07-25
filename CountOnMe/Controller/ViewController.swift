@@ -46,9 +46,13 @@ class ViewController: UIViewController {
     }
 
     @IBAction func multiplyButtonTapped(_ sender: UIButton) {
+        calculation.multiply()
+        updateDisplay()
     }
     
     @IBAction func divideButtonTapped(_ sender: UIButton) {
+        calculation.divide()
+        updateDisplay()
     }
     
     @IBAction func equalButtonTapped() {
@@ -61,6 +65,10 @@ class ViewController: UIViewController {
         calculation.addNumNumber(newNumber)
         updateDisplay()
     }
+    
+    func updateDisplay() {
+        textView.text = calculation.formatText()
+    }
 }
 
 extension ViewController: CalculatorDelegate {
@@ -68,9 +76,5 @@ extension ViewController: CalculatorDelegate {
         let alertVC = UIAlertController(title: title, message: message, preferredStyle: .alert)
         alertVC.addAction(UIAlertAction(title: "OK", style: .cancel, handler: nil))
         self.present(alertVC, animated: true, completion: nil)
-    }
-    
-    func updateDisplay() {
-        textView.text = calculation.formatText()
     }
 }

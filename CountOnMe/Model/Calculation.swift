@@ -10,12 +10,11 @@ import Foundation
 
 protocol CalculatorDelegate {
     func showAlert(title: String, message: String)
-    func updateDisplay()
 }
 
 class Calculation {
     
-    var calculatorDelegate: CalculatorDelegate!
+    var calculatorDelegate: CalculatorDelegate?
     
     var stringNumbers: [String] = [String()]
     var operators: [String] = ["+"]
@@ -25,9 +24,9 @@ class Calculation {
         if let stringNumber = stringNumbers.last {
             if stringNumber.isEmpty {
                 if stringNumbers.count == 1 {
-                    calculatorDelegate.showAlert(title: "Zéro!", message: "Démarrez un nouveau calcul !")
+                    calculatorDelegate?.showAlert(title: "Zéro!", message: "Démarrez un nouveau calcul !")
                 } else {
-                    calculatorDelegate.showAlert(title: "Zéro!", message: "Entrez une expression correcte !")
+                    calculatorDelegate?.showAlert(title: "Zéro!", message: "Entrez une expression correcte !")
                 }
                 return false
             }
@@ -38,7 +37,7 @@ class Calculation {
     var canAddOperator: Bool {
         if let stringNumber = stringNumbers.last {
             if stringNumber.isEmpty {
-                calculatorDelegate.showAlert(title: "Zéro!", message: "Expression incorrecte !")
+                calculatorDelegate?.showAlert(title: "Zéro!", message: "Expression incorrecte !")
                 return false
             }
         }
@@ -71,6 +70,20 @@ class Calculation {
         }
     }
     
+    func multiply() {
+        if canAddOperator {
+            operators.append("*")
+            stringNumbers.append("")
+        }
+    }
+    
+    func divide() {
+        if canAddOperator {
+            operators.append("/")
+            stringNumbers.append("")
+        }
+    }
+    
     func formatText() -> String {
         var text = ""
         for (i, stringNumber) in stringNumbers.enumerated() {
@@ -85,12 +98,12 @@ class Calculation {
         return text
     }
     
-    
-    
     func calculateTotal() -> Int {
         if !isExpressionCorrect {
             return 0
         }
+        
+        priorCalculation()
         
         var total = 0
         for (i, stringNumber) in stringNumbers.enumerated() {
@@ -106,6 +119,34 @@ class Calculation {
         clear()
         
         return total
+    }
+    
+    func priorCalculation() {
+        var result: Int = 0
+        let priorOperators = "*/"
+        
+        for (i, stringNumber) in stringNumbers.enumerated().reversed() {
+            if let number = Int(stringNumber) {
+                if priorOperators.contains(operators[i]) {
+                    if let number1 = Int(stringNumbers[i-1]) {
+                        switch operators[i] {
+                        case "*":
+                            result = Int(number1 * number)
+                        case "/":
+                            result = Int(number1 / number)
+                        default:
+                            break
+                        }
+                        
+                        // Put result in first number
+                        stringNumbers[i-1] = String(result)
+                        // Remove next number and operator
+                        stringNumbers.remove(at: i)
+                        operators.remove(at: i)
+                    }
+                }
+            }
+        }
     }
     
     func clear() {
