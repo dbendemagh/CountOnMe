@@ -24,6 +24,25 @@ class CalculationTestCase: XCTestCase {
         super.tearDown()
     }
     
+    func testGivenNumberIs3_WhenAddingNewNumber5_ThenNumberIs35() {
+        calculation.addNumNumber(3)
+        calculation.addNumNumber(5)
+        XCTAssertEqual(calculation.stringNumbers.last, "35")
+    }
+    
+//    func testGivenNumberIsEmpty_WhenCalculateTotal_ThenExpressionIsIncorrect() {
+//        XCTAssertEqual(calculation.isExpressionCorrect, false)
+//    }
+    
+    func testGivenNumberIs2_WhenAddingPlus4Minus3_ThenTextIs2Plus4Minus3() {
+        calculation.addNumNumber(2)
+        calculation.plus()
+        calculation.addNumNumber(4)
+        calculation.minus()
+        calculation.addNumNumber(3)
+        XCTAssertEqual(calculation.formatText(), "2+4-3")
+    }
+    
     func testGivenNumbers2And2_WhenPlus_ThenResultIs4() {
         calculation.addNumNumber(2)
         calculation.plus()
@@ -45,12 +64,4 @@ class CalculationTestCase: XCTestCase {
         calculation.addNumNumber(4)
         XCTAssertEqual(calculation.calculateTotal(), 2)
     }
-    
-    func testPerformanceExample() {
-        // This is an example of a performance test case.
-        self.measure {
-            // Put the code you want to measure the time of here.
-        }
-    }
-    
 }
