@@ -98,16 +98,32 @@ class Calculation {
         return text
     }
     
-    func calculateTotal() -> Int {
+    func formatDouble(number: Double) -> String {
+        //let text = String(number)
+        
+        //let mantissa = number - floor(number)
+        
+        if number.mantissa() > 0 {
+            return number.withComma()
+        } else {
+            return String(Int(number))
+        }
+        
+        
+    }
+    
+    func calculateTotal() -> Double {
         if !isExpressionCorrect {
             return 0
         }
         
+        //let test = Double("12,50".commaToPoint())
+        
         priorCalculation()
         
-        var total = 0
+        var total: Double = 0
         for (i, stringNumber) in stringNumbers.enumerated() {
-            if let number = Int(stringNumber) {
+            if let number = Double(stringNumber) {
                 if operators[i] == "+" {
                     total += number
                 } else if operators[i] == "-" {
@@ -122,29 +138,47 @@ class Calculation {
     }
     
     func priorCalculation() {
-        var result: Int = 0
+        
+        // Find / and * operators and calculate them
+        // + 2      ->      + 2
+        // + 10             +
+        // / 2
+        // * 3
+        // +
+        //
+        var result: Double = 0
         let priorOperators = "*/"
         
-        for (i, stringNumber) in stringNumbers.enumerated().reversed() {
-            if let number = Int(stringNumber) {
-                if priorOperators.contains(operators[i]) {
-                    if let number1 = Int(stringNumbers[i-1]) {
-                        switch operators[i] {
+        var i = 0
+        
+        while i < stringNumbers.maxIndex() - 1 {
+            // Find * or / operators
+            if var number = Double(stringNumbers[i]) {
+                // Next operator contain * or / operators
+                while priorOperators.contains(operators[i.nextIndex()]) {
+                    // Loop on each * or / operators
+                    if let number1 = Double(stringNumbers[i.nextIndex()]) {
+                        switch operators[i.nextIndex()] {
                         case "*":
-                            result = Int(number1 * number)
+                            result = Double(number * number1)
                         case "/":
-                            result = Int(number1 / number)
+                            result = Double(number / number1)
                         default:
                             break
                         }
                         
                         // Put result in first number
-                        stringNumbers[i-1] = String(result)
+                        stringNumbers[i] = String(result)
+                        number = result
                         // Remove next number and operator
-                        stringNumbers.remove(at: i)
-                        operators.remove(at: i)
+                        stringNumbers.remove(at: i.nextIndex())
+                        operators.remove(at: i.nextIndex())
+                        
+                        if i == stringNumbers.maxIndex() { break }
                     }
                 }
+                
+                i += 1
             }
         }
     }
@@ -153,5 +187,35 @@ class Calculation {
         stringNumbers = [String()]
         operators = ["+"]
         index = 0
+    }
+}
+
+extension Int {
+    func nextIndex() -> Int {
+        return self + 1
+    }
+}
+
+extension Array {
+    func maxIndex() -> Int {
+        return self.count - 1
+    }
+}
+
+extension Double {
+    func mantissa() -> Double {
+        return self - floor(self)
+    }
+    
+    func withComma() -> String {
+        let text = String(self)
+        
+        return text.split(separator: ".").joined(separator: ",")
+    }
+}
+
+extension String {
+    func commaToPoint() -> String {
+        return self.split(separator: ",").joined(separator: ".")
     }
 }
