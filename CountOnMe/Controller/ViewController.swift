@@ -22,7 +22,7 @@ class ViewController: UIViewController {
     }
     
     func calculateTotal() {
-        textView.text = textView.text + "=\(calculation.calculateTotal())"
+        textView.text = textView.text + "=" + calculation.formatDouble(number: calculation.calculateTotal()) //"=\(calculation.calculateTotal().withComma())"
     }
     
     // MARK: - Action
@@ -40,6 +40,11 @@ class ViewController: UIViewController {
         updateDisplay()
     }
 
+    @IBAction func commaButtonTapped(_ sender: UIButton) {
+        calculation.addComma()
+        updateDisplay()
+    }
+    
     @IBAction func minusButtonTapped() {
         calculation.minus()
         updateDisplay()

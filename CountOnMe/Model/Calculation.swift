@@ -18,7 +18,7 @@ class Calculation {
     
     var stringNumbers: [String] = [String()]
     var operators: [String] = ["+"]
-    var index = 0
+    //var index = 0
     
     var isExpressionCorrect: Bool {
         if let stringNumber = stringNumbers.last {
@@ -48,10 +48,18 @@ class Calculation {
         if let stringNumber = stringNumbers.last {
             var stringNumberMutable = stringNumber
             stringNumberMutable += "\(newNumber)"
-            stringNumbers[stringNumbers.count-1] = stringNumberMutable
+            stringNumbers[stringNumbers.maxIndex()] = stringNumberMutable
         }
-        
         //calculatorDelegate.updateDisplay()
+    }
+    
+    func addComma() {
+        if var stringNumber = stringNumbers.last {
+            if !stringNumber.contains(",") {
+                stringNumber += ","
+                stringNumbers[stringNumbers.maxIndex()] = stringNumber
+            }
+        }
     }
     
     func plus() {
@@ -91,7 +99,7 @@ class Calculation {
             if i > 0 {
                 text += operators[i]
             }
-            // Add number
+            
             text += stringNumber
         }
         
@@ -99,17 +107,11 @@ class Calculation {
     }
     
     func formatDouble(number: Double) -> String {
-        //let text = String(number)
-        
-        //let mantissa = number - floor(number)
-        
         if number.mantissa() > 0 {
             return number.withComma()
         } else {
             return String(Int(number))
         }
-        
-        
     }
     
     func calculateTotal() -> Double {
@@ -117,22 +119,19 @@ class Calculation {
             return 0
         }
         
-        //let test = Double("12,50".commaToPoint())
-        
         priorCalculation()
         
         var total: Double = 0
         for (i, stringNumber) in stringNumbers.enumerated() {
-            if let number = Double(stringNumber) {
-                if operators[i] == "+" {
-                    total += number
-                } else if operators[i] == "-" {
-                    total -= number
-                }
+            if let number = Double(stringNumber.commaToPoint()) {
+                total = calculate(total, number, operators[i])
             }
         }
         
         clear()
+        
+        // Bonus
+        stringNumbers[0] = formatDouble(number: total)
         
         return total
     }
@@ -148,28 +147,23 @@ class Calculation {
         //
         var result: Double = 0
         let priorOperators = "*/"
+        var stringNumber: String
         
         var i = 0
         
-        while i < stringNumbers.maxIndex() - 1 {
+        while i < stringNumbers.maxIndex() {
             // Find * or / operators
-            if var number = Double(stringNumbers[i]) {
-                // Next operator contain * or / operators
+            stringNumber = stringNumbers[i].commaToPoint()
+            if var number1 = Double(stringNumber) {
                 while priorOperators.contains(operators[i.nextIndex()]) {
                     // Loop on each * or / operators
-                    if let number1 = Double(stringNumbers[i.nextIndex()]) {
-                        switch operators[i.nextIndex()] {
-                        case "*":
-                            result = Double(number * number1)
-                        case "/":
-                            result = Double(number / number1)
-                        default:
-                            break
-                        }
+                    stringNumber = stringNumbers[i.nextIndex()].commaToPoint()
+                    if let number2 = Double(stringNumber) {
+                        result = calculate(number1, number2, operators[i.nextIndex()])
                         
                         // Put result in first number
                         stringNumbers[i] = String(result)
-                        number = result
+                        number1 = result
                         // Remove next number and operator
                         stringNumbers.remove(at: i.nextIndex())
                         operators.remove(at: i.nextIndex())
@@ -177,16 +171,37 @@ class Calculation {
                         if i == stringNumbers.maxIndex() { break }
                     }
                 }
-                
                 i += 1
             }
         }
     }
     
+    func calculate(_ number1: Double, _ number2: Double, _ calculationOperator: String) -> Double {
+        
+        var result: Double = 0
+        
+        switch calculationOperator {
+        case "+":
+            result = number1 + number2
+        case "-":
+            result =  number1 - number2
+        case "*":
+            result = number1 * number2
+        case "/":
+            result = number1 / number2
+        default:
+            break
+        }
+        
+        return result
+        
+    }
+    
     func clear() {
         stringNumbers = [String()]
         operators = ["+"]
-        index = 0
+        //index = 0
+        
     }
 }
 
