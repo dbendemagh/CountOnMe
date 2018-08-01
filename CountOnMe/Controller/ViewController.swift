@@ -64,6 +64,11 @@ class ViewController: UIViewController {
         calculateTotal()
     }
 
+    @IBAction func backspaceButtonTapped(_ sender: UIButton) {
+        calculation.backspace()
+        updateDisplay()
+    }
+    
     // MARK: - Methods
 
     func addNewNumber(_ newNumber: Int) {
@@ -72,7 +77,13 @@ class ViewController: UIViewController {
     }
     
     func updateDisplay() {
-        textView.text = calculation.formatText()
+        let text = calculation.formatText()
+        
+        if text == "" {
+            textView.text = "0"
+        } else {
+            textView.text = text
+        }
     }
 }
 

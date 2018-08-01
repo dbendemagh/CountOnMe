@@ -34,7 +34,7 @@
                                 <rect key="frame" x="16" y="277" width="288" height="206"/>
                                 <subviews>
                                     <stackView opaque="NO" contentMode="scaleToFill" axis="vertical" spacing="10" translatesAutoresizingMaskIntoConstraints="NO" id="GZQ-ZL-Chx">
-                                        <rect key="frame" x="0.0" y="0.0" width="73.5" height="152"/>
+                                        <rect key="frame" x="0.0" y="0.0" width="73.5" height="206"/>
                                         <subviews>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6uw-jf-qlX">
                                                 <rect key="frame" x="0.0" y="0.0" width="73.5" height="44"/>
@@ -67,6 +67,20 @@
                                                 </state>
                                                 <connections>
                                                     <action selector="tappedNumberButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="wzA-WF-CXf"/>
+                                                </connections>
+                                            </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="WMk-VZ-lkx">
+                                                <rect key="frame" x="0.0" y="162" width="73.5" height="44"/>
+                                                <color key="backgroundColor" red="0.60392156860000001" green="0.57647058819999997" blue="0.56862745100000001" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                <constraints>
+                                                    <constraint firstAttribute="height" constant="44" id="KnP-2e-hyr"/>
+                                                </constraints>
+                                                <state key="normal" image="backspace">
+                                                    <color key="titleColor" red="1" green="1" blue="1" alpha="1" colorSpace="custom" customColorSpace="sRGB"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="backspaceButtonTapped:" destination="BYZ-38-t0r" eventType="touchUpInside" id="MUh-en-sIY"/>
+                                                    <action selector="tappedNumberButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="cPG-nq-x03"/>
                                                 </connections>
                                             </button>
                                         </subviews>
@@ -270,4 +284,7 @@
             <point key="canvasLocation" x="305" y="387"/>
         </scene>
     </scenes>
+    <resources>
+        <image name="backspace" width="32" height="32"/>
+    </resources>
 </document>

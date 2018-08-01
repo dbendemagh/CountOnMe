@@ -17,30 +17,56 @@ class Calculation {
     var calculatorDelegate: CalculatorDelegate?
     
     var stringNumbers: [String] = [String()]
+    // problem with + character : "Unable to read data" on debug
     var operators: [String] = ["+"]
     //var index = 0
     
     var isExpressionCorrect: Bool {
-        if let stringNumber = stringNumbers.last {
-            if stringNumber.isEmpty {
-                if stringNumbers.count == 1 {
-                    calculatorDelegate?.showAlert(title: "Zéro!", message: "Démarrez un nouveau calcul !")
-                } else {
-                    calculatorDelegate?.showAlert(title: "Zéro!", message: "Entrez une expression correcte !")
-                }
-                return false
-            }
+        
+        if !isNumberCorrect {
+            return false
         }
+        
+        if stringNumbers.count < 2 {
+            calculatorDelegate?.showAlert(title: "Incomplet!", message: "Entrez une expression correcte !")
+            return false
+        }
+//        if let stringNumber = stringNumbers.last {
+//            //if stringNumber.isEmpty {
+//                if stringNumbers.count == 1 {
+//                    calculatorDelegate?.showAlert(title: "Zéro!", message: "Démarrez un nouveau calcul !")
+//                } else {
+//                    calculatorDelegate?.showAlert(title: "Zéro!", message: "Entrez une expression correcte !")
+//                }
+//                return false
+//            //}
+//        }
         return true
     }
     
     var canAddOperator: Bool {
-        if let stringNumber = stringNumbers.last {
+        return isNumberCorrect
+    }
+    
+    var isNumberCorrect: Bool {
+        if let stringNumber = stringNumbers.last, let ope = operators.last {
             if stringNumber.isEmpty {
-                calculatorDelegate?.showAlert(title: "Zéro!", message: "Expression incorrecte !")
+                calculatorDelegate?.showAlert(title: "Zéro!", message: "Entrez une valeur !")
                 return false
+            } else {
+                let value = Double(stringNumber.commaToPoint())
+            
+                if value == 0 {
+                    if ope == "/" {
+                        calculatorDelegate?.showAlert(title: "Zéro!", message: "Division par zéro impossible !")
+                    } else {
+                        calculatorDelegate?.showAlert(title: "Zéro!", message: "Expression incorrecte !")
+                    }
+                    return false
+                }
             }
         }
+        
         return true
     }
     
@@ -50,7 +76,6 @@ class Calculation {
             stringNumberMutable += "\(newNumber)"
             stringNumbers[stringNumbers.maxIndex()] = stringNumberMutable
         }
-        //calculatorDelegate.updateDisplay()
     }
     
     func addComma() {
@@ -66,7 +91,6 @@ class Calculation {
         if canAddOperator {
             operators.append("+")
             stringNumbers.append("")
-            //calculatorDelegate.updateDisplay()
         }
     }
     
@@ -74,7 +98,6 @@ class Calculation {
         if canAddOperator {
             operators.append("-")
             stringNumbers.append("")
-            //calculatorDelegate.updateDisplay()
         }
     }
     
@@ -130,21 +153,13 @@ class Calculation {
         
         clear()
         
-        // Bonus
+        // Reuse the last result
         stringNumbers[0] = formatDouble(number: total)
         
         return total
     }
     
     func priorCalculation() {
-        
-        // Find / and * operators and calculate them
-        // + 2      ->      + 2
-        // + 10             +
-        // / 2
-        // * 3
-        // +
-        //
         var result: Double = 0
         let priorOperators = "*/"
         var stringNumber: String
@@ -202,6 +217,21 @@ class Calculation {
         operators = ["+"]
         //index = 0
         
+    }
+    
+    func backspace() {
+        // Remove last entry
+        if var stringNumber = stringNumbers.last {
+            if stringNumber.isEmpty {
+                if stringNumbers.count > 1 {
+                    stringNumbers.removeLast()
+                    operators.removeLast()
+                }
+            } else {
+                stringNumber.removeLast()
+                stringNumbers[stringNumbers.maxIndex()] = stringNumber
+            }
+        }
     }
 }
 

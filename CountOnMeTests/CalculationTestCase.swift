@@ -25,24 +25,48 @@ class CalculationTestCase: XCTestCase {
         super.tearDown()
     }
     
-    func testGivenNumberIs3_WhenAddingNewNumber5_ThenNumberIs35() {
-        calculation.addNumNumber(3)
-        calculation.addNumNumber(5)
-        XCTAssertEqual(calculation.stringNumbers.last, "35")
+    // Number tests
+    func testGivenNumberIsEmpty_WhenCallingIsNumberCorrect_ThenResultIsFalse() {
+        XCTAssertFalse(calculation.isNumberCorrect)
     }
     
-    func testGivenNumberIsEmpty_WhenCalculateTotal_ThenExpressionIsIncorrect() {
-        XCTAssertEqual(calculation.isExpressionCorrect, false)
+    func testGivenNumberIs0_WhenCallingIsNumberCorrect_ThenResultIsFalse() {
+        calculation.addNumNumber(0)
+        XCTAssertFalse(calculation.isNumberCorrect)
     }
     
     func testGivenNumberIsEmpty_WhenCheckCanAddOperator_ThenResultFalse() {
         XCTAssertFalse(calculation.canAddOperator)
     }
     
+    func testGivenNumberIs4_WhenDivideByZero_ThenNotPossible() {
+        calculation.addNumNumber(4)
+        calculation.divide()
+        calculation.addNumNumber(0)
+        XCTAssertFalse(calculation.isNumberCorrect)
+    }
+    
+    // Add number tests
+    func testGivenNumberIs3_WhenAddingNewNumber5_ThenNumberIs35() {
+        calculation.addNumNumber(3)
+        calculation.addNumNumber(5)
+        XCTAssertEqual(calculation.stringNumbers.last, "35")
+    }
+    
+    // calculation tests
+    func testGivenNumberIsEmpty_WhenCalculateTotal_ThenExpressionIsIncorrect() {
+        XCTAssertEqual(calculation.isExpressionCorrect, false)
+    }
+    
     func testGivenNumberIs3AndEmpty_WhenTestExpression_ThenExpressionIsIncorrect() {
         calculation.addNumNumber(3)
         calculation.plus()
         let _ = calculation.calculateTotal()
+        XCTAssertFalse(calculation.isExpressionCorrect)
+    }
+    
+    func testGivenNumberIs5_WhenMissingSecondNumber_ThenCalculationNotPossible() {
+        calculation.addNumNumber(5)
         XCTAssertFalse(calculation.isExpressionCorrect)
     }
     
@@ -153,18 +177,25 @@ class CalculationTestCase: XCTestCase {
         XCTAssertEqual(calculation.calculateTotal(), 4.5)
     }
     
-    // Delete tests
+    // Backspace tests
     
     // 123 Delete -> 12
     func testGivenNumberIs123_WhenDelete_ThenNumberIs12() {
         calculation.addNumNumber(1)
         calculation.addNumNumber(2)
         calculation.addNumNumber(3)
-        calculation.delete()
+        calculation.backspace()
         XCTAssertEqual(calculation.stringNumbers.last, "12")
     }
     
-    
+    // Last number is empty, remove last operator
+    func testGivenNumberIs3_WhenMultiplyAndBackspace_ThenMultiplyOperatorIsRemoved() {
+        calculation.addNumNumber(3)
+        calculation.multiply()
+        calculation.backspace()
+        XCTAssertEqual(calculation.stringNumbers.last, "3")
+        XCTAssertEqual(calculation.operators.last, "+")
+    }
     
     
     
