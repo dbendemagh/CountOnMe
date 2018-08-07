@@ -19,7 +19,22 @@ extension Double {
         return self - floor(self)
     }
     
-    // fraction
+    func fraction2() -> String {
+        let formatter = NumberFormatter()
+        formatter.numberStyle = .decimal
+        formatter.roundingMode = NumberFormatter.RoundingMode.halfUp
+        formatter.usesGroupingSeparator = false
+        formatter.maximumFractionDigits = 2
+        
+        let value: Double = self
+        let nsnumberValue: NSNumber = NSNumber(value: value)
+        
+        if let roundedValue = formatter.string(from: nsnumberValue) {
+            return roundedValue
+        }
+        
+        return ""
+    }
     
     func withComma() -> String {
         let text = String(self)

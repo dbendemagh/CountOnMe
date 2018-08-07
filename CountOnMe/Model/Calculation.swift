@@ -153,13 +153,15 @@ class Calculation {
         clear()
         
         // Reuse the last result
-        stringNumbers[0] = String(total) //.fraction()
+        stringNumbers[0] = total.fraction2()
         
         textIsLastTotal = true
         
         return total
     }
     
+    // * and / operators priority
+    // The calculation order must be from the beginning at the end
     func priorCalculation() {
         var result: Double = 0
         let priorOperators = "*/"

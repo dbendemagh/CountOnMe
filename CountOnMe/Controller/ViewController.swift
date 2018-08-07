@@ -22,7 +22,7 @@ class ViewController: UIViewController {
     }
     
     func calculateTotal() {
-        textView.text = textView.text + "\n=" + calculation.calculateTotal().fraction()   // calculation.formatDouble(number: calculation.calculateTotal()) //"=\(calculation.calculateTotal().withComma())"
+        textView.text = textView.text + "\n=" + calculation.calculateTotal().fraction2()
     }
     
     // MARK: - Action
