@@ -55,7 +55,7 @@ class CalculationTestCase: XCTestCase {
     
     // calculation tests
     func testGivenNumberIsEmpty_WhenCalculateTotal_ThenExpressionIsIncorrect() {
-        XCTAssertEqual(calculation.isExpressionCorrect, false)
+        XCTAssertFalse(calculation.isExpressionCorrect)
     }
     
     func testGivenNumberIs3AndEmpty_WhenTestExpression_ThenExpressionIsIncorrect() {
@@ -197,6 +197,28 @@ class CalculationTestCase: XCTestCase {
         XCTAssertEqual(calculation.operators.last, "+")
     }
     
+    // Reuse total tests
+    
+    //
+    func testGiven2Plus2_WhenCalculateTotalAndAdding1_ThenLastTotalIsRemoved() {
+        calculation.addNumNumber(2)
+        calculation.plus()
+        calculation.addNumNumber(2)
+        _ = calculation.calculateTotal()
+        XCTAssertEqual(calculation.stringNumbers[0], "4")
+        calculation.addNumNumber(1)
+        XCTAssertEqual(calculation.stringNumbers[0], "1")
+    }
+    
+    // Reuse total
+    func testGiven2Plus2_WhenCalculateTotalAndAddingPlus_ThenTextIs41() {
+        calculation.addNumNumber(2)
+        calculation.plus()
+        calculation.addNumNumber(2)
+        _ = calculation.calculateTotal()
+        calculation.plus()
+        XCTAssertEqual(calculation.stringNumbers[0], "4")
+    }
     
     
 }
