@@ -185,10 +185,45 @@ class CalculationTestCase: XCTestCase {
         XCTAssertEqual(calculation.calculateTotal(), 0)
     }
     
-    // Backspace tests
+    // MARK: - Delete tests
     
-    // 123 Delete -> 12
-    func testGivenNumberIs123_WhenDelete_ThenNumberIs12() {
+    // All Clear tests
+    func testGivenEntryIs123Plus456_WhenAC_ThenAllIsClear() {
+        calculation.addNumNumber(1)
+        calculation.addNumNumber(2)
+        calculation.addNumNumber(3)
+        calculation.plus()
+        calculation.addNumNumber(4)
+        calculation.addNumNumber(5)
+        calculation.addNumNumber(6)
+        calculation.clear()
+        XCTAssertEqual(calculation.stringNumbers.count, 1)
+        XCTAssertEqual(calculation.operators.last, "+")
+        XCTAssertEqual(calculation.stringNumbers.last, "")
+    }
+    
+    // Clear Entry tests
+    // 123 CE -> ""
+    func testGivenNumberIs123_WhenCE_ThenNumberIsEmpty() {
+        calculation.addNumNumber(1)
+        calculation.addNumNumber(2)
+        calculation.addNumNumber(3)
+        calculation.clearEntry()
+        XCTAssertEqual(calculation.stringNumbers.last, "")
+    }
+    
+    // Last number is empty, remove last operator
+    func testGivenNumberIs3_WhenMultiplyAndCE_ThenMultiplyOperatorIsRemoved() {
+        calculation.addNumNumber(3)
+        calculation.multiply()
+        calculation.clearEntry()
+        XCTAssertEqual(calculation.stringNumbers.last, "3")
+        XCTAssertEqual(calculation.operators.last, "+")
+    }
+    
+    // Backspace tests
+    // 123 Backspace -> 12
+    func testGivenNumberIs123_WhenBackspace_ThenNumberIs12() {
         calculation.addNumNumber(1)
         calculation.addNumNumber(2)
         calculation.addNumNumber(3)
