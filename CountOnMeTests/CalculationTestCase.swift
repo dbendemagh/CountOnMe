@@ -177,6 +177,14 @@ class CalculationTestCase: XCTestCase {
         XCTAssertEqual(calculation.calculateTotal(), 4.5)
     }
     
+    func testGivenNumber4_WhenAddingUnkownOperatorAnd2_ThenResultIs0() {
+        calculation.addNumNumber(4)
+        calculation.operators.append("$")
+        calculation.stringNumbers.append("")
+        calculation.addNumNumber(2)
+        XCTAssertEqual(calculation.calculateTotal(), 0)
+    }
+    
     // Backspace tests
     
     // 123 Delete -> 12

@@ -176,8 +176,8 @@ class Calculation {
                 while priorOperators.contains(operators[i.nextIndex()]) {
                     // Loop on each * or / operators
                     stringNumber = stringNumbers[i.nextIndex()].commaToPoint()
-                    if let nextNumber = Double(stringNumber) {
-                        result = calculate(currentNumber, nextNumber, operators[i.nextIndex()])
+                    let nextNumber = Double(stringNumber) //{
+                    result = calculate(currentNumber, nextNumber!, operators[i.nextIndex()])
                         
                         // Put result in first number
                         stringNumbers[i] = String(result)
@@ -187,7 +187,6 @@ class Calculation {
                         operators.remove(at: i.nextIndex())
                         
                         if i == stringNumbers.maxIndex() { break }
-                    }
                 }
                 i += 1
             }
