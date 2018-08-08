@@ -64,6 +64,16 @@ class ViewController: UIViewController {
         calculateTotal()
     }
 
+    @IBAction func allClear(_ sender: UIButton) {
+        calculation.clear()
+        updateDisplay()
+    }
+    
+    @IBAction func clearEntry(_ sender: UIButton) {
+        calculation.clearEntry()
+        updateDisplay()
+    }
+    
     @IBAction func backspaceButtonTapped(_ sender: UIButton) {
         calculation.backspace()
         updateDisplay()

@@ -15,10 +15,6 @@ extension Int {
 }
 
 extension Double {
-    func mantissa() -> Double {
-        return self - floor(self)
-    }
-    
     func fraction2() -> String {
         let formatter = NumberFormatter()
         formatter.numberStyle = .decimal
@@ -35,15 +31,17 @@ extension Double {
         
         return ""
     }
-    
-    func withComma() -> String {
-        let text = String(self)
-        
-        return text.split(separator: ".").joined(separator: ",")
-    }
 }
 
 extension String {
+    func double() -> Double {
+        if let value = Double(self.split(separator: ",").joined(separator: ".")) {
+            return value
+        }
+        
+        return 0
+    }
+    
     func commaToPoint() -> String {
         return self.split(separator: ",").joined(separator: ".")
     }

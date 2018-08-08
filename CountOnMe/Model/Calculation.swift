@@ -21,7 +21,7 @@ class Calculation {
     var operators: [String] = ["+"]
     var textIsLastTotal: Bool = false
     
-    // MARK: - Control value
+    // MARK: - Data validity properties
     
     var isExpressionCorrect: Bool {
         
@@ -62,6 +62,8 @@ class Calculation {
         return true
     }
     
+    // MARK: - Data entry methods
+    
     func addNumNumber(_ newNumber: Int) {
         if let stringNumber = stringNumbers.last {
             var stringNumberMutable = "" //stringNumber
@@ -86,8 +88,6 @@ class Calculation {
             }
         }
     }
-    
-    // MARK: - Actions Buttons
     
     func plus() {
         if canAddOperator {
@@ -117,7 +117,6 @@ class Calculation {
         }
     }
     
-    
     func formatText() -> String {
         var text = ""
         for (i, stringNumber) in stringNumbers.enumerated() {
@@ -134,7 +133,7 @@ class Calculation {
         return text
     }
     
-    // MARK: - Calculation
+    // MARK: - Calculation methods
     
     func calculateTotal() -> Double {
         if !isExpressionCorrect {
@@ -186,7 +185,9 @@ class Calculation {
                         stringNumbers.remove(at: i.nextIndex())
                         operators.remove(at: i.nextIndex())
                         
-                        if i == stringNumbers.maxIndex() { break }
+                        if i == stringNumbers.maxIndex() {
+                            break
+                        }
                 }
                 i += 1
             }
@@ -212,17 +213,30 @@ class Calculation {
         return result
     }
     
-    // MARK: - Text Edition
+    // MARK: - Erase data methods
     
     func clear() {
         stringNumbers = [String()]
         operators = ["+"]
         //index = 0
-        
+    }
+    
+    func clearEntry() {
+        // Erase last number or last operator
+        if let stringNumber = stringNumbers.last {
+            if stringNumber.isEmpty {
+                if stringNumbers.count > 1 {
+                    stringNumbers.removeLast()
+                    operators.removeLast()
+                }
+            } else {
+                stringNumbers[stringNumbers.maxIndex()] = ""
+            }
+        }
     }
     
     func backspace() {
-        // Remove last entry
+        // Remove last entry or last operator
         if var stringNumber = stringNumbers.last {
             if stringNumber.isEmpty {
                 if stringNumbers.count > 1 {
