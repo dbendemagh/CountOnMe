@@ -79,6 +79,33 @@ class ViewController: UIViewController {
         updateDisplay()
     }
     
+    @IBAction func otherButtonsTapped(_ sender: UIButton) {
+        switch sender.title(for: .normal) {
+        case "AC":
+            calculation.clear()
+        case "CE":
+            calculation.clearEntry()
+        case "":
+            calculation.backspace()
+        case ",":
+            calculation.addComma()
+        case "+":
+            calculation.plus()
+        case "-":
+            calculation.minus()
+        case "*":
+            calculation.multiply()
+        case "/":
+            calculation.divide()
+        case "=":
+            calculateTotal()
+        default:
+            break
+        }
+        
+        updateDisplay()
+    }
+    
     // MARK: - Methods
 
     func addNewNumber(_ newNumber: Int) {

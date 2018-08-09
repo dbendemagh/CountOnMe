@@ -178,16 +178,16 @@ class Calculation {
                     let nextNumber = Double(stringNumber) //{
                     result = calculate(currentNumber, nextNumber!, operators[i.nextIndex()])
                         
-                        // Put result in first number
-                        stringNumbers[i] = String(result)
-                        currentNumber = result
-                        // Remove next number and operator
-                        stringNumbers.remove(at: i.nextIndex())
-                        operators.remove(at: i.nextIndex())
-                        
-                        if i == stringNumbers.maxIndex() {
-                            break
-                        }
+                    // Put result in first number
+                    stringNumbers[i] = String(result)
+                    currentNumber = result
+                    // Remove next number and operator
+                    stringNumbers.remove(at: i.nextIndex())
+                    operators.remove(at: i.nextIndex())
+                    
+                    if i == stringNumbers.maxIndex() {
+                        break
+                    }
                 }
                 i += 1
             }
