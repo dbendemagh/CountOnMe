@@ -162,8 +162,7 @@ class Calculation {
         
         while i < stringNumbers.maxIndex() {
             // Find * or / operators
-            stringNumber = stringNumbers[i] //.commaToPoint()
-            var currentNumber = stringNumbers[i].double()    // Double(stringNumber) {
+            var currentNumber = stringNumbers[i].double()
             while priorOperators.contains(operators[i.nextIndex()]) {
                 // Loop on each * or / operators
                 stringNumber = stringNumbers[i.nextIndex()]
