@@ -27,76 +27,27 @@ class ViewController: UIViewController {
     
     // MARK: - Action
 
-    @IBAction func tappedNumberButton(_ sender: UIButton) {
+    @IBAction func numberButtonsTapped(_ sender: UIButton) {
         for (i, numberButton) in numberButtons.enumerated() {
             if sender == numberButton {
                 addNewNumber(i)
             }
         }
     }
-
-    @IBAction func plusButtonTapped() {
-        calculation.plus()
-        updateDisplay()
-    }
-
-    @IBAction func commaButtonTapped(_ sender: UIButton) {
-        calculation.addComma()
-        updateDisplay()
-    }
-    
-    @IBAction func minusButtonTapped() {
-        calculation.minus()
-        updateDisplay()
-    }
-
-    @IBAction func multiplyButtonTapped(_ sender: UIButton) {
-        calculation.multiply()
-        updateDisplay()
-    }
-    
-    @IBAction func divideButtonTapped(_ sender: UIButton) {
-        calculation.divide()
-        updateDisplay()
-    }
-    
-    @IBAction func equalButtonTapped() {
-        calculateTotal()
-    }
-
-    @IBAction func allClear(_ sender: UIButton) {
-        calculation.clear()
-        updateDisplay()
-    }
-    
-    @IBAction func clearEntry(_ sender: UIButton) {
-        calculation.clearEntry()
-        updateDisplay()
-    }
-    
-    @IBAction func backspaceButtonTapped(_ sender: UIButton) {
-        calculation.backspace()
-        updateDisplay()
-    }
     
     @IBAction func otherButtonsTapped(_ sender: UIButton) {
-        switch sender.title(for: .normal) {
+        let buttonTitle = sender.title(for: .normal)
+        switch buttonTitle! {
         case "AC":
             calculation.clear()
         case "CE":
-            calculation.clearEntry()
+            calculation.eraseNumber(eraseType: .ClearEntry)
         case "":
-            calculation.backspace()
+            calculation.eraseNumber(eraseType: .Backspace)
         case ",":
             calculation.addComma()
-        case "+":
-            calculation.plus()
-        case "-":
-            calculation.minus()
-        case "*":
-            calculation.multiply()
-        case "/":
-            calculation.divide()
+        case "+", "-", "*", "/":
+            calculation.addOperator(stringOperator: buttonTitle!)
         case "=":
             calculateTotal()
         default:
@@ -109,7 +60,7 @@ class ViewController: UIViewController {
     // MARK: - Methods
 
     func addNewNumber(_ newNumber: Int) {
-        calculation.addNumNumber(newNumber)
+        calculation.addNumber(newNumber)
         updateDisplay()
     }
     

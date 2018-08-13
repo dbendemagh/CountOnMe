@@ -26,7 +26,7 @@ class CalculationTestCase: XCTestCase {
     }
     
     func testGivenNumberIs0_WhenCallingIsNumberCorrect_ThenResultIsFalse() {
-        calculation.addNumNumber(0)
+        calculation.addNumber(0)
         XCTAssertFalse(calculation.isNumberCorrect)
     }
     
@@ -35,17 +35,23 @@ class CalculationTestCase: XCTestCase {
     }
     
     func testGivenNumberIs4_WhenDivideByZero_ThenNotPossible() {
-        calculation.addNumNumber(4)
-        calculation.divide()
-        calculation.addNumNumber(0)
+        calculation.addNumber(4)
+        calculation.addOperator(stringOperator: "/")
+        calculation.addNumber(0)
         XCTAssertFalse(calculation.isNumberCorrect)
     }
     
     // Add number tests
     func testGivenNumberIs3_WhenAddingNewNumber5_ThenNumberIs35() {
-        calculation.addNumNumber(3)
-        calculation.addNumNumber(5)
+        calculation.addNumber(3)
+        calculation.addNumber(5)
         XCTAssertEqual(calculation.stringNumbers.last, "35")
+    }
+    
+    // Add comma test
+    func testGivenNumberIsEmpty_WhenAddingComma_ThenResultIs0Comma() {
+        calculation.addComma()
+        XCTAssertEqual(calculation.stringNumbers.last, "0,")
     }
     
     // calculation tests
@@ -54,24 +60,24 @@ class CalculationTestCase: XCTestCase {
     }
     
     func testGivenNumberIs3AndEmpty_WhenTestExpression_ThenExpressionIsIncorrect() {
-        calculation.addNumNumber(3)
-        calculation.plus()
+        calculation.addNumber(3)
+        calculation.addOperator(stringOperator: "+")
         let _ = calculation.calculateTotal()
         XCTAssertFalse(calculation.isExpressionCorrect)
     }
     
     func testGivenNumberIs5_WhenMissingSecondNumber_ThenCalculationNotPossible() {
-        calculation.addNumNumber(5)
+        calculation.addNumber(5)
         XCTAssertFalse(calculation.isExpressionCorrect)
     }
     
     // Format text
     func testGivenNumberIs2_WhenAddingPlus4Minus3_ThenTextIs2Plus4Minus3() {
-        calculation.addNumNumber(2)
-        calculation.plus()
-        calculation.addNumNumber(4)
-        calculation.minus()
-        calculation.addNumNumber(3)
+        calculation.addNumber(2)
+        calculation.addOperator(stringOperator: "+")
+        calculation.addNumber(4)
+        calculation.addOperator(stringOperator: "-")
+        calculation.addNumber(3)
         XCTAssertEqual(calculation.formatText(), "2+4-3")
     }
     
@@ -79,29 +85,29 @@ class CalculationTestCase: XCTestCase {
     
     // 2 + 2 = 4
     func testGivenNumberIs2_WhenAddingPlus2_ThenResultIs4() {
-        calculation.addNumNumber(2)
-        calculation.plus()
-        calculation.addNumNumber(2)
+        calculation.addNumber(2)
+        calculation.addOperator(stringOperator: "+")
+        calculation.addNumber(2)
         XCTAssertEqual(calculation.calculateTotal(), 4)
     }
     
     func testGivenNumber25_WhenAddingPlus2_ThenResultIs27() {
-        calculation.addNumNumber(2)
-        calculation.addNumNumber(5)
-        calculation.plus()
-        calculation.addNumNumber(2)
+        calculation.addNumber(2)
+        calculation.addNumber(5)
+        calculation.addOperator(stringOperator: "+")
+        calculation.addNumber(2)
         XCTAssertEqual(calculation.calculateTotal(), 27)
     }
     
     // 2.3 + 4.5 = 6.8
     func testGivenNumberIs2_3_WhenAddingPlus4_5_ThenResultIs6_8() {
-        calculation.addNumNumber(2)
+        calculation.addNumber(2)
         calculation.addComma()
-        calculation.addNumNumber(3)
-        calculation.plus()
-        calculation.addNumNumber(4)
+        calculation.addNumber(3)
+        calculation.addOperator(stringOperator: "+")
+        calculation.addNumber(4)
         calculation.addComma()
-        calculation.addNumNumber(5)
+        calculation.addNumber(5)
         XCTAssertEqual(calculation.calculateTotal(), 6.8)
     }
     
@@ -109,21 +115,21 @@ class CalculationTestCase: XCTestCase {
     
     // 6 - 4 = 2
     func testGivenNumber6_WhenAddingMinus4_ThenResultIs2() {
-        calculation.addNumNumber(6)
-        calculation.minus()
-        calculation.addNumNumber(4)
+        calculation.addNumber(6)
+        calculation.addOperator(stringOperator: "-")
+        calculation.addNumber(4)
         XCTAssertEqual(calculation.calculateTotal(), 2)
     }
     
     // 5.4 - 3.2 = 2.2
     func testGivenNumberIs5_4WhenAddingMinus3_2_ThenResultIs1_2() {
-        calculation.addNumNumber(5)
+        calculation.addNumber(5)
         calculation.addComma()
-        calculation.addNumNumber(4)
-        calculation.minus()
-        calculation.addNumNumber(3)
+        calculation.addNumber(4)
+        calculation.addOperator(stringOperator: "-")
+        calculation.addNumber(3)
         calculation.addComma()
-        calculation.addNumNumber(2)
+        calculation.addNumber(2)
         XCTAssertEqual(calculation.calculateTotal(), 2.2)
     }
     
@@ -131,21 +137,21 @@ class CalculationTestCase: XCTestCase {
     
     // 2 * 3 = 6
     func testGivenNumber2_WhenAddingMultiply3_ThenResultIs6() {
-        calculation.addNumNumber(2)
-        calculation.multiply()
-        calculation.addNumNumber(3)
+        calculation.addNumber(2)
+        calculation.addOperator(stringOperator: "*")
+        calculation.addNumber(3)
         XCTAssertEqual(calculation.calculateTotal(), 6)
     }
     
     // 2.3 * 4.5 = 10.35
     func testGivenNumberIs2_3_WhenAddingMultiply4_5_ThenResultIs10_35() {
-        calculation.addNumNumber(2)
+        calculation.addNumber(2)
         calculation.addComma()
-        calculation.addNumNumber(3)
-        calculation.multiply()
-        calculation.addNumNumber(4)
+        calculation.addNumber(3)
+        calculation.addOperator(stringOperator: "*")
+        calculation.addNumber(4)
         calculation.addComma()
-        calculation.addNumNumber(5)
+        calculation.addNumber(5)
         XCTAssertEqual(calculation.calculateTotal(), 10.35)
     }
     
@@ -153,30 +159,43 @@ class CalculationTestCase: XCTestCase {
     
     // 10 / 2 = 5
     func testGivenNumber10_WhenAddingDivide2_ThenResultIs5() {
-        calculation.addNumNumber(1)
-        calculation.addNumNumber(0)
-        calculation.divide()
-        calculation.addNumNumber(2)
+        calculation.addNumber(1)
+        calculation.addNumber(0)
+        calculation.addOperator(stringOperator: "/")
+        calculation.addNumber(2)
         XCTAssertEqual(calculation.calculateTotal(), 5)
     }
     
     // 5.4 / 1.2 = 4.5
     func testGivenNumberIs5_4WhenAddingDivide1_2_ThenResultIs4_5() {
-        calculation.addNumNumber(5)
+        calculation.addNumber(5)
         calculation.addComma()
-        calculation.addNumNumber(4)
-        calculation.divide()
-        calculation.addNumNumber(1)
+        calculation.addNumber(4)
+        calculation.addOperator(stringOperator: "/")
+        calculation.addNumber(1)
         calculation.addComma()
-        calculation.addNumNumber(2)
+        calculation.addNumber(2)
         XCTAssertEqual(calculation.calculateTotal(), 4.5)
     }
     
+    // Ensure that consecutive * and / operators are calculated in order from beginning to the end
+    func testGivenNumber10_WhenDivideBy20ANDMultiplyBy30_ThenResultIs15() {
+        calculation.addNumber(1)
+        calculation.addNumber(0)
+        calculation.addOperator(stringOperator: "/")
+        calculation.addNumber(2)
+        calculation.addNumber(0)
+        calculation.addOperator(stringOperator: "*")
+        calculation.addNumber(3)
+        calculation.addNumber(0)
+        XCTAssertEqual(calculation.calculateTotal(), 15)
+    }
+    
+    // Unknown operator
     func testGivenNumber4_WhenAddingUnkownOperatorAnd2_ThenResultIs0() {
-        calculation.addNumNumber(4)
-        calculation.operators.append("$")
-        calculation.stringNumbers.append("")
-        calculation.addNumNumber(2)
+        calculation.addNumber(4)
+        calculation.addOperator(stringOperator: "$")
+        calculation.addNumber(2)
         XCTAssertEqual(calculation.calculateTotal(), 0)
     }
     
@@ -184,13 +203,13 @@ class CalculationTestCase: XCTestCase {
     
     // All Clear tests
     func testGivenEntryIs123Plus456_WhenAC_ThenAllIsClear() {
-        calculation.addNumNumber(1)
-        calculation.addNumNumber(2)
-        calculation.addNumNumber(3)
-        calculation.plus()
-        calculation.addNumNumber(4)
-        calculation.addNumNumber(5)
-        calculation.addNumNumber(6)
+        calculation.addNumber(1)
+        calculation.addNumber(2)
+        calculation.addNumber(3)
+        calculation.addOperator(stringOperator: "+")
+        calculation.addNumber(4)
+        calculation.addNumber(5)
+        calculation.addNumber(6)
         calculation.clear()
         XCTAssertEqual(calculation.stringNumbers.count, 1)
         XCTAssertEqual(calculation.operators.last, "+")
@@ -200,18 +219,18 @@ class CalculationTestCase: XCTestCase {
     // Clear Entry tests
     // 123 CE -> ""
     func testGivenNumberIs123_WhenCE_ThenNumberIsEmpty() {
-        calculation.addNumNumber(1)
-        calculation.addNumNumber(2)
-        calculation.addNumNumber(3)
-        calculation.clearEntry()
+        calculation.addNumber(1)
+        calculation.addNumber(2)
+        calculation.addNumber(3)
+        calculation.eraseNumber(eraseType: .ClearEntry)
         XCTAssertEqual(calculation.stringNumbers.last, "")
     }
     
     // Last number is empty, remove last operator
     func testGivenNumberIs3_WhenMultiplyAndCE_ThenMultiplyOperatorIsRemoved() {
-        calculation.addNumNumber(3)
-        calculation.multiply()
-        calculation.clearEntry()
+        calculation.addNumber(3)
+        calculation.addOperator(stringOperator: "*")
+        calculation.eraseNumber(eraseType: .ClearEntry)
         XCTAssertEqual(calculation.stringNumbers.last, "3")
         XCTAssertEqual(calculation.operators.last, "+")
     }
@@ -219,42 +238,41 @@ class CalculationTestCase: XCTestCase {
     // Backspace tests
     // 123 Backspace -> 12
     func testGivenNumberIs123_WhenBackspace_ThenNumberIs12() {
-        calculation.addNumNumber(1)
-        calculation.addNumNumber(2)
-        calculation.addNumNumber(3)
-        calculation.backspace()
+        calculation.addNumber(1)
+        calculation.addNumber(2)
+        calculation.addNumber(3)
+        calculation.eraseNumber(eraseType: .Backspace)
         XCTAssertEqual(calculation.stringNumbers.last, "12")
     }
     
     // Last number is empty, remove last operator
     func testGivenNumberIs3_WhenMultiplyAndBackspace_ThenMultiplyOperatorIsRemoved() {
-        calculation.addNumNumber(3)
-        calculation.multiply()
-        calculation.backspace()
+        calculation.addNumber(3)
+        calculation.addOperator(stringOperator: "*")
+        calculation.eraseNumber(eraseType: .Backspace)
         XCTAssertEqual(calculation.stringNumbers.last, "3")
         XCTAssertEqual(calculation.operators.last, "+")
     }
     
     // Reuse total tests
     
-    //
     func testGiven2Plus2_WhenCalculateTotalAndAdding1_ThenLastTotalIsRemoved() {
-        calculation.addNumNumber(2)
-        calculation.plus()
-        calculation.addNumNumber(2)
+        calculation.addNumber(2)
+        calculation.addOperator(stringOperator: "+")
+        calculation.addNumber(2)
         _ = calculation.calculateTotal()
         XCTAssertEqual(calculation.stringNumbers[0], "4")
-        calculation.addNumNumber(1)
+        calculation.addNumber(1)
         XCTAssertEqual(calculation.stringNumbers[0], "1")
     }
     
     // Reuse total
     func testGiven2Plus2_WhenCalculateTotalAndAddingPlus_ThenTextIs41() {
-        calculation.addNumNumber(2)
-        calculation.plus()
-        calculation.addNumNumber(2)
+        calculation.addNumber(2)
+        calculation.addOperator(stringOperator: "+")
+        calculation.addNumber(2)
         _ = calculation.calculateTotal()
-        calculation.plus()
+        calculation.addOperator(stringOperator: "+")
         XCTAssertEqual(calculation.stringNumbers[0], "4")
     }
     

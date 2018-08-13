@@ -17,11 +17,15 @@ class Calculation {
     var calculatorDelegate: CalculatorDelegate?
     
     var stringNumbers: [String] = [String()]
-    // problem with + character : "Unable to read data" on debug
     var operators: [String] = ["+"]
-    var textIsLastTotal: Bool = false
+    private var textIsLastTotal: Bool = false
     
-    // MARK: - Data validity properties
+    enum EraseType {
+        case Backspace
+        case ClearEntry
+    }
+    
+    // MARK: - Properties
     
     var isExpressionCorrect: Bool {
         
@@ -46,7 +50,7 @@ class Calculation {
                 calculatorDelegate?.showAlert(title: "Vide!", message: "Entrez une valeur !")
                 return false
             } else {
-                let value = Double(stringNumber.commaToPoint())
+                let value = stringNumber.double()
             
                 if value == 0 {
                     if ope == "/" {
@@ -64,9 +68,11 @@ class Calculation {
     
     // MARK: - Data entry methods
     
-    func addNumNumber(_ newNumber: Int) {
+    // Add number
+    // Manage last total reuse
+    func addNumber(_ newNumber: Int) {
         if let stringNumber = stringNumbers.last {
-            var stringNumberMutable = "" //stringNumber
+            var stringNumberMutable = ""
             
             if textIsLastTotal {
                 // Remove last total
@@ -78,45 +84,35 @@ class Calculation {
             stringNumberMutable += "\(newNumber)"
             stringNumbers[stringNumbers.maxIndex()] = stringNumberMutable
         }
+        textIsLastTotal = false
     }
     
     func addComma() {
         if var stringNumber = stringNumbers.last {
+            // Check if comma already exist
             if !stringNumber.contains(",") {
+                // Add 0 before comma if number is empty
+                if stringNumber.isEmpty {
+                    stringNumber += "0"
+                }
                 stringNumber += ","
                 stringNumbers[stringNumbers.maxIndex()] = stringNumber
             }
         }
+        
+        textIsLastTotal = false
     }
     
-    func plus() {
+    func addOperator(stringOperator: String) {
         if canAddOperator {
-            operators.append("+")
+            operators.append(stringOperator)
             stringNumbers.append("")
         }
+        
+        textIsLastTotal = false
     }
     
-    func minus() {
-        if canAddOperator {
-            operators.append("-")
-            stringNumbers.append("")
-        }
-    }
-    
-    func multiply() {
-        if canAddOperator {
-            operators.append("*")
-            stringNumbers.append("")
-        }
-    }
-    
-    func divide() {
-        if canAddOperator {
-            operators.append("/")
-            stringNumbers.append("")
-        }
-    }
-    
+    // Format numbers and operators
     func formatText() -> String {
         var text = ""
         for (i, stringNumber) in stringNumbers.enumerated() {
@@ -127,8 +123,6 @@ class Calculation {
             
             text += stringNumber
         }
-        
-        textIsLastTotal = false
         
         return text
     }
@@ -144,24 +138,22 @@ class Calculation {
         
         var total: Double = 0
         for (i, stringNumber) in stringNumbers.enumerated() {
-            if let number = Double(stringNumber.commaToPoint()) {
-                total = calculate(total, number, operators[i])
-            }
+            let number = stringNumber.double()
+            total = calculate(total, number, operators[i])
         }
         
         clear()
         
         // Reuse the last result
         stringNumbers[0] = total.fraction2()
-        
         textIsLastTotal = true
         
         return total
     }
     
-    // * and / operators priority
-    // The calculation order must be from the beginning at the end
-    func priorCalculation() {
+    // Calculate * and / operators in priority
+    // The calculation order must be from beginning to the end
+    private func priorCalculation() {
         var result: Double = 0
         let priorOperators = "*/"
         var stringNumber: String
@@ -170,31 +162,30 @@ class Calculation {
         
         while i < stringNumbers.maxIndex() {
             // Find * or / operators
-            stringNumber = stringNumbers[i].commaToPoint()
-            if var currentNumber = Double(stringNumber) {
-                while priorOperators.contains(operators[i.nextIndex()]) {
-                    // Loop on each * or / operators
-                    stringNumber = stringNumbers[i.nextIndex()].commaToPoint()
-                    let nextNumber = Double(stringNumber) //{
-                    result = calculate(currentNumber, nextNumber!, operators[i.nextIndex()])
-                        
-                    // Put result in first number
-                    stringNumbers[i] = String(result)
-                    currentNumber = result
-                    // Remove next number and operator
-                    stringNumbers.remove(at: i.nextIndex())
-                    operators.remove(at: i.nextIndex())
-                    
-                    if i == stringNumbers.maxIndex() {
-                        break
-                    }
+            stringNumber = stringNumbers[i] //.commaToPoint()
+            var currentNumber = stringNumbers[i].double()    // Double(stringNumber) {
+            while priorOperators.contains(operators[i.nextIndex()]) {
+                // Loop on each * or / operators
+                stringNumber = stringNumbers[i.nextIndex()]
+                let nextNumber = stringNumber.double()
+                result = calculate(currentNumber, nextNumber, operators[i.nextIndex()])
+                
+                // Put result in first number
+                stringNumbers[i] = String(result)
+                currentNumber = result
+                // Remove next number and operator
+                stringNumbers.remove(at: i.nextIndex())
+                operators.remove(at: i.nextIndex())
+                
+                if i == stringNumbers.maxIndex() {
+                    break
                 }
-                i += 1
             }
+            i += 1
         }
     }
     
-    func calculate(_ number1: Double, _ number2: Double, _ calculationOperator: String) -> Double {
+    private func calculate(_ number1: Double, _ number2: Double, _ calculationOperator: String) -> Double {
         var result: Double = 0
         
         switch calculationOperator {
@@ -218,25 +209,11 @@ class Calculation {
     func clear() {
         stringNumbers = [String()]
         operators = ["+"]
-        //index = 0
+        textIsLastTotal = false
     }
     
-    func clearEntry() {
-        // Erase last number or last operator
-        if let stringNumber = stringNumbers.last {
-            if stringNumber.isEmpty {
-                if stringNumbers.count > 1 {
-                    stringNumbers.removeLast()
-                    operators.removeLast()
-                }
-            } else {
-                stringNumbers[stringNumbers.maxIndex()] = ""
-            }
-        }
-    }
-    
-    func backspace() {
-        // Remove last entry or last operator
+    // Backspace or Clear Entry
+    func eraseNumber(eraseType: EraseType) {
         if var stringNumber = stringNumbers.last {
             if stringNumber.isEmpty {
                 if stringNumbers.count > 1 {
@@ -244,10 +221,16 @@ class Calculation {
                     operators.removeLast()
                 }
             } else {
-                stringNumber.removeLast()
-                stringNumbers[stringNumbers.maxIndex()] = stringNumber
+                switch eraseType {
+                case .Backspace:
+                    stringNumber.removeLast()
+                    stringNumbers[stringNumbers.maxIndex()] = stringNumber
+                case .ClearEntry:
+                    stringNumbers[stringNumbers.maxIndex()] = ""
+                }
             }
         }
+        textIsLastTotal = false
     }
 }
 

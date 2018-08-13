@@ -16,8 +16,4 @@ extension String {
         
         return 0
     }
-    
-    func commaToPoint() -> String {
-        return self.split(separator: ",").joined(separator: ".")
-    }
 }
