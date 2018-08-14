@@ -54,6 +54,13 @@ class CalculationTestCase: XCTestCase {
         XCTAssertEqual(calculation.stringNumbers.last, "0,")
     }
     
+    func testGivenTextIsTotal_WhenAddingComma_ThenResultIs0Comma() {
+        calculation.addNumber(3)
+        calculation.textIsLastTotal = true
+        calculation.addComma()
+        XCTAssertEqual(calculation.stringNumbers.last, "0,")
+    }
+    
     // calculation tests
     func testGivenNumberIsEmpty_WhenCalculateTotal_ThenExpressionIsIncorrect() {
         XCTAssertFalse(calculation.isExpressionCorrect)

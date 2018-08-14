@@ -14,18 +14,18 @@ protocol CalculatorDelegate {
 
 class Calculation {
     
+    // MARK: - Properties
+    
     var calculatorDelegate: CalculatorDelegate?
     
     var stringNumbers: [String] = [String()]
     var operators: [String] = ["+"]
-    private var textIsLastTotal: Bool = false
+    var textIsLastTotal: Bool = false
     
     enum EraseType {
         case Backspace
         case ClearEntry
     }
-    
-    // MARK: - Properties
     
     var isExpressionCorrect: Bool {
         
@@ -45,7 +45,7 @@ class Calculation {
     }
     
     var isNumberCorrect: Bool {
-        if let stringNumber = stringNumbers.last, let ope = operators.last {
+        if let stringNumber = stringNumbers.last, let stringOperator = operators.last {
             if stringNumber.isEmpty {
                 calculatorDelegate?.showAlert(title: "Vide!", message: "Entrez une valeur !")
                 return false
@@ -53,7 +53,7 @@ class Calculation {
                 let value = stringNumber.double()
             
                 if value == 0 {
-                    if ope == "/" {
+                    if stringOperator == "/" {
                         calculatorDelegate?.showAlert(title: "Zéro!", message: "Division par zéro impossible !")
                     } else {
                         calculatorDelegate?.showAlert(title: "Zéro!", message: "Expression incorrecte !")
@@ -68,48 +68,46 @@ class Calculation {
     
     // MARK: - Data entry methods
     
-    // Add number
-    // Manage last total reuse
+    // Add number and manage last total reuse
     func addNumber(_ newNumber: Int) {
-        if let stringNumber = stringNumbers.last {
-            var stringNumberMutable = ""
-            
+        if var stringNumber = stringNumbers.last {
             if textIsLastTotal {
                 // Remove last total
-                stringNumberMutable = ""
-            } else {
-                stringNumberMutable = stringNumber
+                stringNumber = ""
             }
             
-            stringNumberMutable += "\(newNumber)"
-            stringNumbers[stringNumbers.maxIndex()] = stringNumberMutable
+            stringNumber += "\(newNumber)"
+            stringNumbers[stringNumbers.maxIndex()] = stringNumber
+            textIsLastTotal = false
         }
-        textIsLastTotal = false
     }
     
+    // Add comma and manage last total reuse
     func addComma() {
         if var stringNumber = stringNumbers.last {
-            // Check if comma already exist
+            // Check that stringNumber doesn't already contain a comma
             if !stringNumber.contains(",") {
+                if textIsLastTotal {
+                    // Remove last total
+                    stringNumber = ""
+                }
                 // Add 0 before comma if number is empty
                 if stringNumber.isEmpty {
                     stringNumber += "0"
                 }
                 stringNumber += ","
                 stringNumbers[stringNumbers.maxIndex()] = stringNumber
+                textIsLastTotal = false
             }
         }
-        
-        textIsLastTotal = false
     }
     
     func addOperator(stringOperator: String) {
         if canAddOperator {
             operators.append(stringOperator)
             stringNumbers.append("")
+            textIsLastTotal = false
         }
-        
-        textIsLastTotal = false
     }
     
     // Format numbers and operators
@@ -222,14 +220,17 @@ class Calculation {
             } else {
                 switch eraseType {
                 case .Backspace:
-                    stringNumber.removeLast()
-                    stringNumbers[stringNumbers.maxIndex()] = stringNumber
+                    // No Backspace with last total
+                    if !textIsLastTotal {
+                        stringNumber.removeLast()
+                        stringNumbers[stringNumbers.maxIndex()] = stringNumber
+                    }
                 case .ClearEntry:
                     stringNumbers[stringNumbers.maxIndex()] = ""
+                    textIsLastTotal = false
                 }
             }
         }
-        textIsLastTotal = false
     }
 }
 

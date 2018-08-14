@@ -15,7 +15,11 @@ class ViewController: UIViewController {
     @IBOutlet weak var textView: UITextView!
     @IBOutlet var numberButtons: [UIButton]!
     
+    // MARK: - Properties
+    
     var calculation = Calculation()
+    
+    // MARK: - Methods
     
     override func viewDidLoad() {
         calculation.calculatorDelegate = self
@@ -23,6 +27,21 @@ class ViewController: UIViewController {
     
     func calculateTotal() {
         textView.text = textView.text + "\n=" + calculation.calculateTotal().fraction2()
+    }
+    
+    func addNewNumber(_ newNumber: Int) {
+        calculation.addNumber(newNumber)
+        updateDisplay()
+    }
+    
+    func updateDisplay() {
+        let text = calculation.formatText()
+        
+        if text.isEmpty {
+            textView.text = "0"
+        } else {
+            textView.text = text
+        }
     }
     
     // MARK: - Action
@@ -36,41 +55,27 @@ class ViewController: UIViewController {
     }
     
     @IBAction func otherButtonsTapped(_ sender: UIButton) {
-        let buttonTitle = sender.title(for: .normal)
-        switch buttonTitle! {
-        case "AC":
-            calculation.clear()
-        case "CE":
-            calculation.eraseNumber(eraseType: .ClearEntry)
-        case "":
-            calculation.eraseNumber(eraseType: .Backspace)
-        case ",":
-            calculation.addComma()
-        case "+", "-", "*", "/":
-            calculation.addOperator(stringOperator: buttonTitle!)
-        case "=":
-            calculateTotal()
-        default:
-            break
-        }
-        
-        updateDisplay()
-    }
-    
-    // MARK: - Methods
-
-    func addNewNumber(_ newNumber: Int) {
-        calculation.addNumber(newNumber)
-        updateDisplay()
-    }
-    
-    func updateDisplay() {
-        let text = calculation.formatText()
-        
-        if text == "" {
-            textView.text = "0"
-        } else {
-            textView.text = text
+        if let buttonTitle = sender.title(for: .normal) {
+            switch buttonTitle {
+            case "AC":
+                calculation.clear()
+            case "CE":
+                calculation.eraseNumber(eraseType: .ClearEntry)
+            case " ":
+                calculation.eraseNumber(eraseType: .Backspace)
+            case ",":
+                calculation.addComma()
+            case "+", "-", "*", "/":
+                calculation.addOperator(stringOperator: buttonTitle)
+            case "=":
+                calculateTotal()
+            default:
+                break
+            }
+            
+            if !calculation.textIsLastTotal {
+                updateDisplay()
+            }
         }
     }
 }
